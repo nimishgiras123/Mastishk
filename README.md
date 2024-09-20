@@ -1,5 +1,4 @@
-# Mastishk
-
+# Mastishk - This project won the college level Hackathon - 'hackaccino' organized by CSI-BU
 ## Transforming Minds: Empowerment through Cognitive Rehabilitation
 
 Mastishk is a platform designed to support children with learning disabilities, such as ADHD, Autism, Dyslexia, and more, by offering personalized cognitive rehabilitation solutions. The project aims to empower children, parents, and therapists with tools for personalized learning, real-time feedback, and progress tracking.
