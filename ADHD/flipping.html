@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Game</title>
+<style>
+
+
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: beige; /* Default background color */
+  }
+  #game-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .card {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    background-color: beige; /* Default background color */
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    cursor: pointer;
+    perspective: 1000px;
+  }
+  .card .content {
+    position: absolute;
+    backface-visibility: hidden;
+    transition: transform 0.5s;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, #00bfff 50%, yellow 25%, green 25%); /* Gradient background */
+    border-radius: 5px;
+    font-size: 30px; /* Increase font size by 50% */
+  }
+  .card.flipped .content {
+    transform: rotateY(180deg);
+  }
+  #message {
+    display: none;
+  }
+  #match-stats {
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #match-stats th, #match-stats td {
+    padding: 10px;
+    border: 1px solid #000;
+  }
+</style>
+</head>
+<body>
+
+<h1>Memory Game</h1>
+
+<div id="game-container">
+</div>
+
+<div id="message">
+  <h2>Congratulations!</h2>
+  <p>You made it through the puzzle. Well done!</p>
+  <table id="match-stats">
+    <tr>
+      <th>Successful Matches</th>
+      <th>Unsuccessful Matches</th>
+    </tr>
+  </table>
+</div>
+
+<script>
+  const emojis = ['😀', '😎', '🎉', '🌟', '🍎', '🍕', '🚀', '🎈']; // You can add more emojis if desired
+  let firstCard = null;
+  let secondCard = null;
+  let isProcessing = false;
+  let matchCount = 0;
+  let successfulMatches = 0;
+  let unsuccessfulMatches = 0;
+  let scores = [0];
+
+  // Create a shuffled deck of cards
+  const deck = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+
+  // Render the cards on the game board
+  const gameContainer = document.getElementById('game-container');
+  deck.forEach((emoji, index) => {
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.dataset.index = index;
+    const content = document.createElement('div');
+    content.classList.add('content', 'hidden');
+    content.innerText = emoji;
+    card.appendChild(content);
+    card.addEventListener('click', handleCardClick);
+    gameContainer.appendChild(card);
+  });
+
+  // Handle click on a card
+  function handleCardClick() {
+    if (isProcessing) return;
+    const clickedCard = this;
+    if (clickedCard === firstCard || clickedCard === secondCard) return;
+    clickedCard.classList.add('flipped');
+    if (!firstCard) {
+      firstCard = clickedCard;
+    } else if (!secondCard) {
+      secondCard = clickedCard;
+      checkMatch();
+    }
+  }
+
+  // Check if the two flipped cards match
+  function checkMatch() {
+    isProcessing = true;
+    const firstIndex = parseInt(firstCard.dataset.index);
+    const secondIndex = parseInt(secondCard.dataset.index);
+    if (deck[firstIndex] === deck[secondIndex]) {
+      successfulMatches++;
+      matchCount++;
+      resetCards();
+      if (matchCount === emojis.length) {
+        setTimeout(() => {
+          document.getElementById('message').style.display = 'block';
+          displayMatchStats();
+        }, 500);
+        window.location.href = "/ADHD/dashboardADHD.html";
+        scores.push(successfulMatches);
+        localStorage.setItem("sharedADHD2Score", scores);
+      }
+    } else {
+      unsuccessfulMatches++;
+      setTimeout(() => {
+        firstCard.classList.remove('flipped');
+        secondCard.classList.remove('flipped');
+        resetCards();
+      }, 1000);
+    }
+  }
+
+  // Reset cards after checking match
+  function resetCards() {
+    firstCard = null;
+    secondCard = null;
+    isProcessing = false;
+  }
+
+  // Display match statistics
+  function displayMatchStats() {
+    const matchStats = document.getElementById('match-stats');
+    matchStats.innerHTML += `
+      <tr>
+        <td>${successfulMatches}</td>
+        <td>${unsuccessfulMatches}</td>
+      </tr>
+    `;
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+        background-image: url(/86336.jpg);
+        background-size: cover;
+    font-family: 'Roboto', sans-serif;
+        background-color: #f4f4f4;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 50px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+     font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .row {
+      display: flex;
+    }
+
+    .cell {
+      border: 1px solid #ccc;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .cell:active {
+      outline: none;
+    }
+
+    .reset-btn:hover {
+      background-color: #2980b9;
+    }
+    #submit-btn:hover {
+      background-color: #2980b9;
+    }
+    button {
+        background-color: #4cc3f6;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+    .score {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>TIC TAC TOE</h1>
+    <div class="ui">
+      <div class="row">
+        <input type="text" id="b1" class="cell" onclick="playMove(0, 0)" readonly>
+        <input type="text" id="b2" class="cell" onclick="playMove(0, 1)" readonly>
+        <input type="text" id="b3" class="cell" onclick="playMove(0, 2)" readonly>
+      </div>
+      <div class="row">
+        <input type="text" id="b4" class="cell" onclick="playMove(1, 0)" readonly>
+        <input type="text" id="b5" class="cell" onclick="playMove(1, 1)" readonly>
+        <input type="text" id="b6" class="cell" onclick="playMove(1, 2)" readonly>
+      </div>
+      <div class="row">
+        <input type="text" id="b7" class="cell" onclick="playMove(2, 0)" readonly>
+        <input type="text" id="b8" class="cell" onclick="playMove(2, 1)" readonly>
+        <input type="text" id="b9" class="cell" onclick="playMove(2, 2)" readonly>
+      </div>
+    </div>
+    <br><br>
+    <button id="submit-btn">Submit</button>
+    <button class="reset-btn" onclick="resetGame()">Reset</button>
+   
+    <div class="score">Fails: <span id="score0">0</span> | Successes: <span id="scoreX">0</span></div>
+    <p id="print"></p>
+  </div>
+
+  <script>
+    let board = [
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ];
+    let currentPlayer = 'X';
+    let scoreX = 0;
+    let score0 = 0;
+
+    function playMove(row, col) {
+      if (board[row][col] === '' && !isGameOver()) {
+        board[row][col] = currentPlayer;
+        document.getElementById(`b${(row * 3) + col + 1}`).value = currentPlayer;
+        if (isGameOver()) {
+          document.getElementById('print').innerHTML = "Game Over! " + (currentPlayer === 'X' ? 'Player X' : 'Player 0') + " wins!";
+          if (currentPlayer === 'X') {
+            scoreX++;
+          } else {
+            score0++;
+          }
+          updateScore();
+        } else {
+          currentPlayer = currentPlayer === 'X' ? '0' : 'X';
+          document.getElementById('print').innerHTML = "Player " + currentPlayer + "'s turn";
+          if (currentPlayer === '0') {
+            setTimeout(computerMove, 500);
+          }
+        }
+      }
+    }
+
+    function computerMove() {
+      if (!isGameOver()) {
+        let emptyCells = [];
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            if (board[i][j] === '') {
+              emptyCells.push({ row: i, col: j });
+            }
+          }
+        }
+        let randomIndex = Math.floor(Math.random() * emptyCells.length);
+        let move = emptyCells[randomIndex];
+        playMove(move.row, move.col);
+      }
+    }
+
+    function isGameOver() {
+      for (let i = 0; i < 3; i++) {
+        if (board[i][0] !== '' && board[i][0] === board[i][1] && board[i][0] === board[i][2]) {
+          return true;
+        }
+        if (board[0][i] !== '' && board[0][i] === board[1][i] && board[0][i] === board[2][i]) {
+          return true;
+        }
+      }
+      if (board[0][0] !== '' && board[0][0] === board[1][1] && board[0][0] === board[2][2]) {
+        return true;
+      }
+      if (board[0][2] !== '' && board[0][2] === board[1][1] && board[0][2] === board[2][0]) {
+        return true;
+      }
+      if (board.every(row => row.every(cell => cell !== ''))) {
+        document.getElementById('print').innerHTML = "It's a draw!";
+        return true;
+      }
+      return false;
+    }
+
+    function resetGame() {
+      board = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+      ];
+      currentPlayer = 'X';
+      document.getElementById('print').innerHTML = "Player X's turn";
+      for (let i = 1; i <= 9; i++) {
+        document.getElementById(`b${i}`).value = '';
+      }
+    }
+
+    function updateScore() {
+      document.getElementById('scoreX').innerText = scoreX;
+      document.getElementById('score0').innerText = score0;
+    }
+  </script>
+</body>
+
+</html>

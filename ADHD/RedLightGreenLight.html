@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Red Light Green Light Game</title>
+<style>
+  body {
+    font-family : Cooper,Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  #container {
+    text-align: center;
+  }
+  #score {
+    margin-top: 20px;
+    font-size: 20px;
+  }
+  #trafficLight{
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    margin-bottom: 20px;
+    padding: 100px;
+  }
+
+  /* #buttons{
+    margin-top: 20px;
+    padding : 10px;
+  } */
+  #score{
+    margin: 10px;
+  }
+  #buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #buttons button {
+    /* margin: 0 10px;
+    padding: 20px 40px; 
+    font-size: 16px; 
+    border: none;
+    cursor: pointer; */
+
+    margin: 0 10px;
+    padding: 20px 40px; /* Adjust padding to increase or decrease button size */
+    font-size: 16px; /* Adjust font size if needed */
+    /* font-family: cooper; */
+    border: none;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div id="container">
+  <h1>Red Light Green Light Game</h1>
+  <p>Press 'Stop' for Red and 'Go' for Green</p>
+  <div id="trafficLight"></div>
+  <div id="buttons">
+    <button onclick="checkResponse('stop')" style = "margin-top: 20px; margin-right: 40px; padding:19px;">Stop</button>
+    <button onclick="checkResponse('go')" style = "margin-top: 20px; margin-left: 40px; padding:20px;" >Go</button>
+  </div>
+  <div id="score"></div>
+</div>
+
+<script>
+  let score = 0;
+  let correctGuesses = 0;
+  let incorrectGuesses = 0;
+  let currentIteration = 1;
+  let scores = [0];
+
+  function generateRandomColor() {
+    const colors = ['red', 'green'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  function displayColor(color) {
+    const trafficLight = document.getElementById('trafficLight');
+    trafficLight.style.width = '100px';
+    trafficLight.style.height = '100px';
+    trafficLight.style.backgroundColor = color;
+  }
+
+  function checkResponse(response) {
+    const currentColor = document.getElementById('trafficLight').style.backgroundColor;
+    if ((currentColor === 'red' && response === 'stop') || (currentColor === 'green' && response === 'go')) {
+      score += 1;
+      correctGuesses += 1;
+    } else {
+      incorrectGuesses += 1;
+    }
+
+    document.getElementById('score').innerText = `Score: ${score}`;
+
+    if (currentIteration < 20) {
+      currentIteration += 1;
+      playRound();
+    } else {
+      endGame();
+    }
+  }
+
+  function playRound() {
+    const color = generateRandomColor();
+    displayColor(color);
+  }
+
+  function endGame() {
+    document.getElementById('buttons').style.display = 'none';
+    // const summary = document.createElement('table');
+    // const row = summary.insertRow();
+    // const cell1 = row.insertCell(0);
+    // const cell2 = row.insertCell(1);
+    // cell1.innerText = 'Correct Guesses';
+    // cell2.innerText = 'Incorrect Guesses';
+    // const row2 = summary.insertRow();
+    // const cell3 = row2.insertCell(0);
+    // const cell4 = row2.insertCell(1);
+    // cell3.innerText = correctGuesses;
+    // cell4.innerText = incorrectGuesses;
+    // document.getElementById('container').appendChild(summary);
+
+    // Text to Speech
+    const responseSummary = `Your score is ${score}. You made ${correctGuesses} correct guesses and ${incorrectGuesses} incorrect guesses.`;
+    const speechSynthesis = window.speechSynthesis;
+    const speech = new SpeechSynthesisUtterance(responseSummary);
+    window.location.href = "/ADHD/dashboardADHD.html";
+    scores.push(score);
+    localStorage.setItem("sharedADHD1Score", scores);
+    speechSynthesis.speak(speech);
+  }
+
+  // Start the game
+  playRound();
+</script>
+
+</body>
+</html>

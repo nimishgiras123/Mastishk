@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guess the Operator?</title>
+<style>
+body {
+    
+    background-image: url(/86336.jpg);
+    background-size: cover;
+font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    text-align: center;
+    padding: 60px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   
+}
+
+.equation {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.options {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.option {
+    cursor: pointer;
+    padding: 10px 20px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.option:hover {
+    background-color: #c0c0c0;
+}
+
+.success {
+    color: green;
+}
+
+.fail {
+    color: red;
+}
+
+.counters {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+ .buttons{
+    margin-top: 20px;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #2980b9;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Guess the Operator?</h1>
+    <div class="equation">10 ? 5 = 15</div>
+    <div class="options">
+        <div class="option" data-answer="+">+</div>
+        <div class="option" data-answer="-">-</div>
+        <div class="option" data-answer="*">*</div>
+        <div class="option" data-answer="/">/</div>
+    </div>
+    <div id="result"></div>
+    <div class="counters">
+        <div class="fail">Fails: <span id="fail-count">0</span></div>
+        <div class="success">Successes: <span id="success-count">0</span></div>
+    </div>
+    <div class="buttons">
+        <button onclick="submitScore()">Submit</button>
+        <button onclick="resetGame()">Reset</button>
+    </div>
+</div>
+
+<script>
+const options = document.querySelectorAll('.option');
+const failCount = document.getElementById('fail-count');
+const successCount = document.getElementById('success-count');
+let fails = 0;
+let successes = 0;
+let scores = [0];
+const equations = [
+    { equation: '10 ? 5 = 15', answer: '+' },
+    { equation: '10 ? 5 = 5', answer: '-' },
+    { equation: '10 ? 5 = 50', answer: '*' },
+    { equation: '10 ? 5 = 2', answer: '/' }
+];
+let currentEquationIndex = 0;
+
+function loadEquation() {
+    const currentEquation = equations[currentEquationIndex];
+    document.querySelector('.equation').textContent = currentEquation.equation;
+}
+
+function resetGame() {
+    options.forEach(option => {
+        option.style.backgroundColor = '#f0f0f0';
+    });
+    loadEquation();
+}
+
+options.forEach(option => {
+    option.addEventListener('click', () => {
+        const answer = option.getAttribute('data-answer');
+        if (answer === equations[currentEquationIndex].answer) {
+            option.style.backgroundColor = 'green';
+            successes++;
+            successCount.textContent = successes;
+            setTimeout(() => {
+                currentEquationIndex++;
+                if (currentEquationIndex < equations.length) {
+                    resetGame();
+                } else {
+                    alert('Congratulations! You have completed all equations.');
+                    const score = successes - fails;
+                    scores.push(score);
+                    localStorage.setItem("sharedDyscalc2Score", scores);
+                    window.location.href = "/Dyscalculia/dashboardDyscalculia.html";
+                    
+                }
+            }, 1000);
+        } else {
+            option.style.backgroundColor = 'red';
+            fails++;
+            failCount.textContent = fails;
+            setTimeout(() => {
+                option.style.backgroundColor = '#f0f0f0';
+            }, 1000);
+        }
+    });
+});
+
+function submitScore() {
+    alert(`You scored ${successes} out of ${equations.length}`);
+    const score = successes - fails;
+    scores.push(score);
+    localStorage.setItem("sharedDyscalc2Score", scores);
+    window.location.href = "/Dyscalculia/dashboardDyscalculia.html";
+    
+}
+
+loadEquation();
+</script>
+</body>
+</html>

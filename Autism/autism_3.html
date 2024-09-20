@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        
+			  background-image: url(/86336.jpg);
+			  background-size: cover;
+        font-family: 'Roboto', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+
+      #game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 300px;
+        height: 300px;
+        border: 2px solid #333;
+        overflow: hidden;
+        margin: 10px;
+      }
+      
+    
+      #game-screen {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background-color: #3498db;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.5s ease;
+      }
+      .container {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 30px;
+        color: #333;
+        background-color: #fff;
+        border-radius: 10px;
+        align-items: center;
+        padding: 70px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      #score {
+        margin-top: 20px;
+        font-size: 20px;
+      }
+
+      #controls {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        outline: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #2980b9;
+      }
+    </style>
+    <title>Shape Clicker Game</title>
+  </head>
+  <body>
+    <div class="container">
+      Shape Clicker Game
+      <div id="game-container">
+        <div id="game-screen" onclick="handleShapeClick()">Click Me!</div>
+      </div>
+      <div id="score">Score: <span id="current-score">0</span></div>
+      <div id="controls">
+        <button onclick="submitScore()">Submit</button>
+        <button onclick="resetGame()">Reset</button>
+      </div>
+    </div>
+
+    <script>
+      let score = 0;
+      let scores = [0];
+
+      function handleShapeClick() {
+        const targetShape = document.getElementById("game-screen");
+        const currentScoreElement = document.getElementById("current-score");
+
+        // Reduce the size of the shape
+        const currentSize = parseFloat(getComputedStyle(targetShape).width);
+        const newSize = currentSize * 0.9;
+
+        // Check if the new size would make the text overflow
+        const text = "Click Me!";
+        const dummyElement = document.createElement("div");
+        dummyElement.style.position = "absolute";
+        dummyElement.style.visibility = "hidden";
+        dummyElement.style.fontSize = "inherit";
+        dummyElement.textContent = text;
+        document.body.appendChild(dummyElement);
+        const textWidth = dummyElement.offsetWidth;
+        document.body.removeChild(dummyElement);
+
+        if (textWidth * 1.1 <= newSize) {
+          targetShape.style.width = `${newSize}px`;
+          targetShape.style.height = `${newSize}px`;
+        }
+
+        // Change the color of the shape
+        const randomColor = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+        targetShape.style.backgroundColor = randomColor;
+
+        // Check if the click was inside the shape
+        const clickX = event.clientX - targetShape.getBoundingClientRect().left;
+        const clickY = event.clientY - targetShape.getBoundingClientRect().top;
+
+        if (
+          clickX >= 0 &&
+          clickY >= 0 &&
+          clickX <= newSize &&
+          clickY <= newSize
+        ) {
+          // Click was inside the shape
+          score++;
+        } else {
+          // Click was outside the shape
+          score = Math.max(0, score - 1);
+        }
+
+        // Update the score
+        currentScoreElement.textContent = score;
+
+        // If the shape is too small, generate a new shape
+        if (newSize < 30) {
+          resetShape();
+        }
+      }
+
+      function resetShape() {
+        const targetShape = document.getElementById("game-screen");
+        const gameScreen = document.getElementById("game-container");
+
+        // Get the current size of the shape
+        const currentSize = parseFloat(getComputedStyle(targetShape).width);
+
+        // Reset the shape size
+        targetShape.style.width = "100%";
+        targetShape.style.height = "100%";
+
+        // Randomly position the shape
+        const maxX = gameScreen.clientWidth - currentSize;
+        const maxY = gameScreen.clientHeight - currentSize;
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+
+        targetShape.style.left = `${randomX}px`;
+        targetShape.style.top = `${randomY}px`;
+      }
+
+      function submitScore() {
+        alert(`Score submitted: ${score}`);
+        scores.push(score);
+        window.location.href = "/Autism/dashboardAutism.html";
+        localStorage.setItem("sharedAutism3Score", scores);
+
+      }
+
+      function resetGame() {
+        score = 0;
+        document.getElementById('current-score').textContent = score;
+        resetShape();
+      }
+
+      // Initialize the game by resetting the shape
+      window.addEventListener('load', resetShape);
+    </script>
+  </body>
+</html>

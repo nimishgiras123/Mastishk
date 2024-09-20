@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tile Matching Game</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tile {
+    width: 100px;
+    height: 100px;
+    background-color: lightblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border-radius: 5px;
+}
+
+.tile:hover {
+    background-color: #c0c0c0;
+    pointer-events: auto;
+}
+
+.tile.opened, .tile.matched {
+    background-color: #c0c0c0;
+    pointer-events: none;
+}
+
+.dashboard {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="title">Tile Matching Game</div>
+    <div id="game-board"></div>
+    <div class="dashboard">
+        <div>Fails: <span id="fail-count">0</span></div>
+        <div>Successes: <span id="success-count">0</span></div>
+    </div>
+    <button class="button" id="submit-button">Submit</button>
+    <button class="button" id="refresh-button">Refresh</button>
+</div>
+
+<script>
+    let scores = [0];
+const gameBoard = document.getElementById('game-board');
+const failCount = document.getElementById('fail-count');
+const successCount = document.getElementById('success-count');
+const submitButton = document.getElementById('submit-button');
+const refreshButton = document.getElementById('refresh-button');
+
+let tiles = ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H'];
+let openedTiles = [];
+let matchedTiles = [];
+let failCounter = 0;
+let successCounter = 0;
+
+// Shuffle the tiles
+function shuffleTiles() {
+    tiles = tiles.sort(() => Math.random() - 0.5);
+}
+
+// Create the game board
+function createGameBoard() {
+    gameBoard.innerHTML = '';
+    tiles.forEach(tile => {
+        const tileElement = document.createElement('div');
+        tileElement.classList.add('tile');
+        tileElement.textContent = tile;
+        tileElement.addEventListener('click', () => {
+            if (openedTiles.length < 2 && !openedTiles.includes(tileElement) && !matchedTiles.includes(tileElement)) {
+                tileElement.classList.add('opened');
+                openedTiles.push(tileElement);
+
+                if (openedTiles.length === 2) {
+                    setTimeout(() => {
+                        checkTiles();
+                    }, 500);
+                }
+            }
+        });
+        gameBoard.appendChild(tileElement);
+    });
+}
+
+// Check if the opened tiles match
+function checkTiles() {
+    const [tile1, tile2] = openedTiles;
+    const [value1, value2] = [tile1.textContent, tile2.textContent];
+    if (value1 === value2) {
+        tile1.classList.remove('opened');
+        tile2.classList.remove('opened');
+        tile1.classList.add('matched');
+        tile2.classList.add('matched');
+        tile1.style.backgroundColor = 'lightgreen';
+        tile2.style.backgroundColor = 'lightgreen';
+        matchedTiles.push(tile1, tile2);
+        openedTiles = [];
+
+        if (matchedTiles.length === tiles.length) {
+            window.location.href = "/Autism/dashboardAutism.html";
+            scores.push(successCounter);
+            localStorage.setItem("sharedAutism1Score", scores);
+
+        } else {
+            successCounter++;
+            successCount.textContent = successCounter;
+        }
+    } else {
+        tile1.style.backgroundColor = 'red';
+        tile2.style.backgroundColor = 'red';
+        failCounter++;
+        failCount.textContent = failCounter;
+        setTimeout(() => {
+            tile1.style.backgroundColor = 'lightblue';
+            tile2.style.backgroundColor = 'lightblue';
+            tile1.classList.remove('opened');
+            tile2.classList.remove('opened');
+            openedTiles = [];
+        }, 1000);
+    }
+}
+
+// Event listeners for buttons
+submitButton.addEventListener('click', () => {
+    alert('Submit functionality is not implemented yet.');
+});
+
+refreshButton.addEventListener('click', () => {
+    shuffleTiles();
+    createGameBoard();
+    openedTiles = [];
+    matchedTiles = [];
+    failCounter = 0;
+    successCounter = 0;
+    failCount.textContent = failCounter;
+    successCount.textContent = successCounter;
+});
+
+
+console.log(scores);
+
+// Initial setup
+shuffleTiles();
+createGameBoard();
+</script>
+</body>
+</html>

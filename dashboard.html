@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Personal Finance Dashboard</title>
+  <link rel="stylesheet" href="style1.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet"> 
+  <style>
+    /* General Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  background-color: #171C3A;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Sidenav Styling */
+.sidenav {
+  width: 200px;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #1abc9c;
+  color: #fff;
+  padding: 20px;
+}
+
+.sidenav button,
+.sidenav a {
+  display: block;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #1abc9c;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-size: 16px;
+}
+
+.sidenav button:hover,
+.sidenav a:hover {
+  background-color: #16a085;
+}
+
+.sidenav .logout-btn {
+  margin-top: auto;
+}
+
+/* Content Styling */
+.content {
+  margin-left: 220px; /* Adjusted the margin to accommodate the sidebar */
+  padding: 20px 35px 20px 50px;
+  background-color: #171C3A;
+}
+
+/* Dashboard Styling */
+.dashboard-boxes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 40px; /* Increased the grid gap for more space */
+  margin-top: 50px;
+  font-family: 'Roboto', sans-serif;
+
+}
+
+.dashboard-box {
+  background-color: #fff;
+  padding: 30px; /* Increased the padding for more space */
+  border: none;
+  text-align: center;
+  border-radius: 20px;
+  background-color: #0A0E29;
+  backdrop-filter: blur(100px);
+  -webkit-backdrop-filter: blur(40px);
+  color: white;
+  border-radius: 20px;
+    /* other styles */
+    background: rgba(39, 39, 39, 0.1);
+    backdrop-filter: blur(60px);
+     /* fallback for old browsers */
+    -webkit-backdrop-filter: blur(60px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
+
+}
+
+.dashboard-box h2 {
+  margin-top: 0;
+  font-size: 24px; /* Increased the font size for better visibility */
+  letter-spacing: 3px;
+}
+
+.dashboard-value {
+  font-size: 30px; /* Increased the font size for better visibility */
+  font-weight: bold;
+}
+
+.food-table th,
+.food-table td {
+  padding: 10px;
+  border: 2px solid #ccc; 
+  text-align: left;
+  color: #fff;
+}
+
+.food-table th {
+  background-color: #4D73E6;
+  color: #fff;
+}
+
+.food-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+}
+.welcome{
+  padding-left: 40px;
+  color: #fff;
+  font-size: 45px;
+}
+
+
+  </style>
+</head>
+<body>
+  <div class="sidenav">
+    <h1 style="font-family:Roboto Condensed; text-decoration: underline;">FINANCE WISE</h1>
+    <button onclick=""><a href="/dashboard">Dashboard</a></button>
+    <button onclick="wordMatching()"><a href="/transaction">Add Transactions</a></button>
+    <button><a href="/food">Food Payments</a></button>
+    <button><a href="/bills">Bill Payment</a></button>
+    <button><a href="/others">Other Expenses</a></button>
+    <button class="logout-btn"><a href="/logout">Logout</a></button>
+  </div>
+
+  <div class="content">
+    <h1 class="welcome">Welcome  !</h1><br>
+    <div class="dashboard-boxes">
+      <div class="dashboard-box" style="background: rgb(247,155,4); background: linear-gradient(90deg, rgba(247,155,4,1) 0%, rgba(245,102,0,1) 44%, rgba(233,11,11,1) 100%);">
+        <h2>Current Balance</h2>
+        <p class="dashboard-value">0</p>
+      </div>
+      <div class="dashboard-box">
+        <h2>Total Spent</h2>
+        <p class="dashboard-value">0</p>
+      </div>
+      <div class="dashboard-box">
+        <h2>Total Credit</h2>
+        <p class="dashboard-value">0</p>
+      </div>
+    </div>
+
+    <div class="dashboard-boxes">
+      <div class="dashboard-box">
+        <h2>Food Payments</h2>
+        <p class="dashboard-value">0</p>
+      </div>
+      <div class="dashboard-box">
+        <h2>Bill Payments</h2>
+        <p class="dashboard-value">0</p>
+      </div>
+      <div class="dashboard-box">
+        <h2>Other Expenses</h2>
+        <p class="dashboard-value">0</p>
+      </div>
+    </div>
+    <h1 style="color: #ffff; text-align: center; padding: 35px 0;">Recent Transactions</h1>
+    <table class="food-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Description</th>
+          <th>Transaction Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+          <tr>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <form action="/delete" method="POST">
+                <td><button type="submit" name="delete" value="0">Delete</button></td>
+              </form>
+          </tr>
+          
+      </tbody>
+    </table>
+  </div>
+  <script>
+    function wordMatching() {
+      // Set the URL of the HTML file you want to open
+      var url = '/wordMatching.html';
+      
+      // Redirect the browser to the new URL
+      window.location.href = url;
+    }
+  </script>
+</body>
+</html>

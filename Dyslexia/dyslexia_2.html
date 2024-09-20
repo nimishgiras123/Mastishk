@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+      body {
+        background-image: url(/86336.jpg);
+        background-size: cover;
+    font-family: 'Roboto', sans-serif;
+        background-color: #f4f4f4;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+      
+      #game-container {
+        background-color: #fff;
+        max-width: 600px;
+        margin: 50px auto;
+        margin-top: 140px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      #board {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+        justify-content: center;
+      }
+      
+      .card {
+        width: 100px;
+        height: 100px;
+        background-color: #4cc3f6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: transform 0.1s;
+      }
+      
+      .card:active {
+        transform: scale(0.95);
+      }
+      
+      #score {
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      #buttons {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        margin: 0 10px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4cc3f6;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #329bc9;
+      }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching Game</title>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Matching Game</h1>
+        <div id="board"></div>
+        <div id="score">Score: <span id="score-value">0</span></div>
+        <div id="buttons">
+            <button id="submit-button">Submit</button>
+            <button id="reset-button">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        const words = ['apple', 'banana', 'cherry', 'grape', 'orange', 'strawberry'];
+        let matchedWords = [];
+        let score = 0;
+        let scores = [0];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const board = document.getElementById('board');
+            const scoreValue = document.getElementById('score-value');
+            const submitButton = document.getElementById('submit-button');
+            const resetButton = document.getElementById('reset-button');
+
+            initializeGame();
+
+            function initializeGame() {
+                // Duplicate words to create pairs for matching
+                const pairedWords = [...words, ...words];
+                pairedWords.sort(() => Math.random() - 0.5);
+
+                // Create cards on the board
+                pairedWords.forEach((word, index) => {
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+                    card.dataset.word = word;
+                    card.dataset.index = index;
+                    card.textContent = '?';
+                    card.addEventListener('click', handleCardClick);
+                    board.appendChild(card);
+                });
+            }
+
+            function handleCardClick(event) {
+                const clickedCard = event.target;
+                const word = clickedCard.dataset.word;
+
+                // Prevent clicking on already matched cards or revealing more than 2 cards
+                if (!word || clickedCard.classList.contains('matched') || document.querySelectorAll('.revealed').length >= 2) {
+                    return;
+                }
+
+                clickedCard.textContent = word;
+                clickedCard.classList.add('revealed');
+
+                const revealedCards = document.querySelectorAll('.revealed');
+                if (revealedCards.length === 2) {
+                    checkMatch(revealedCards);
+                }
+            }
+
+            function checkMatch(revealedCards) {
+                const [card1, card2] = revealedCards;
+                const word1 = card1.dataset.word;
+                const word2 = card2.dataset.word;
+
+                if (word1 === word2) {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    matchedWords.push(word1);
+                    score++;
+                }
+
+                setTimeout(() => {
+                    // Hide the words on unmatched cards
+                    revealedCards.forEach(card => {
+                        card.textContent = '?';
+                        card.classList.remove('revealed');
+                    });
+
+                    if (matchedWords.length === words.length) {
+                        endGame();
+                    }
+                }, 1000);
+
+                updateScore();
+            }
+
+            function updateScore() {
+                scoreValue.textContent = score;
+            }
+
+            function endGame() {
+                alert(`Congratulations! You've completed the game with a score of ${score}.`);
+                scores.push(score);
+                window.location.href = "/Dyslexia/dashboardDyslexia.html";
+                localStorage.setItem("sharedDyslexia1Score", scores);
+            }
+
+            submitButton.addEventListener('click', () => {
+                alert(`Score submitted: ${score}`);
+                scores.push(score);
+                window.location.href = "/Dyslexia/dashboardDyslexia.html";
+                localStorage.setItem("sharedDyslexia1Score", scores);
+            });
+
+            resetButton.addEventListener('click', () => {
+                matchedWords = [];
+                score = 0;
+                scoreValue.textContent = score;
+                const revealedCards = document.querySelectorAll('.revealed');
+                revealedCards.forEach(card => {
+                    card.textContent = '?';
+                    card.classList.remove('revealed', 'matched');
+                });
+                initializeGame();
+            });
+        });
+    </script>
+</body>
+</html>

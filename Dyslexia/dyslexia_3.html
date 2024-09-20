@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-image: url(/86336.jpg);
+      background-size: cover;
+  font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    .game-container {
+      background-color: #fff;
+      width: 400px;
+      padding: 20px;
+      padding-bottom: 60px;
+      border-radius: 8px;
+      
+      
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #word-display {
+      margin-bottom: 10px;
+    }
+    
+    button {
+      background-color: #4cc3f6;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .space{
+      height: 10px;
+    }
+    button:hover {
+      background-color: #78a5b8;
+    }
+  </style>
+  <title>Phonic Explorer</title>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Phonic Explorer</h1>
+    <div id="word-display">Word: <span id="target-word"></span></div>
+    <div class="space"></div>
+    <label for="user-input">Your Answer:</label>
+    <input type="text" id="user-input">
+    <div class="space"></div>
+    <div id="score">Score: <span id="score-value">0</span></div>
+    <div class="space"></div>
+    <button id="submit-btn">Submit</button>
+    <button id="reset-btn">Reset</button>
+  </div>
+
+  <script>
+    const words = ['cat', 'dog', 'bird', 'fish', 'frog'];
+    let currentWordIndex = 0;
+    let userResponses = [];
+    let score = 0;
+    let scores = [0];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const targetWordSpan = document.getElementById('target-word');
+      const userInputElement = document.getElementById('user-input');
+      const submitBtn = document.getElementById('submit-btn');
+      const resetBtn = document.getElementById('reset-btn');
+      const scoreValue = document.getElementById('score-value');
+
+      updateWordDisplay();
+
+      submitBtn.addEventListener('click', showResult);
+      resetBtn.addEventListener('click', resetGame);
+
+      function updateWordDisplay() {
+        targetWordSpan.textContent = words[currentWordIndex];
+      }
+
+      function showResult() {
+        const targetWord = words[currentWordIndex];
+        const userAnswer = userInputElement.value.trim().toLowerCase();
+
+        userResponses.push({ word: targetWord, userAnswer });
+
+        if (userAnswer === targetWord) {
+          score++;
+          scoreValue.textContent = score;
+        }
+
+        if (currentWordIndex === words.length - 1) {
+          alert(`Game Over! Your score is ${score}/${words.length}`);
+          scores.push(score);
+          window.location.href = "/Dyslexia/dashboardDyslexia.html";
+          localStorage.setItem("sharedDyslexia2Score", scores);
+        } else {
+          currentWordIndex++;
+          updateWordDisplay();
+          userInputElement.value = '';
+          userInputElement.focus();
+        }
+      }
+
+      function resetGame() {
+        currentWordIndex = 0;
+        userResponses = [];
+        score = 0;
+        scoreValue.textContent = score;
+        updateWordDisplay();
+        userInputElement.value = '';
+        userInputElement.focus();
+      }
+    });
+  </script>
+</body>
+</html>

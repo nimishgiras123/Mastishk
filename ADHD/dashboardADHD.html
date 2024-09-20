@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    h1{
+        padding-left: 70px;
+        font-size: 44px;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url(/assets/news-bg.png);
+        
+        background-size: cover;
+        
+    }
+
+    .container {
+        width: 80%;
+        margin: 20px auto;
+    }
+
+    .dashboard-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-card {
+        background-color: black;
+        color: white;
+        border-radius: 10px;
+        padding: 50px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-container {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    p{
+        font-size: 33px;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+    <br>
+    <h1>Red Light Green Light</h1><br>
+<div class="container">
+    <div class="dashboard-container">
+        <div class="dashboard-card">
+            <h2>Score of Last Game Played</h2>
+            <p id="score1">300</p> <!-- Example Score -->
+        </div>
+        <div class="dashboard-card">
+            <canvas id="myChart" width="500" height="300"></canvas>
+        </div>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Score of Last Game</th>
+                    <th>Date and Time of Last Game Played</th>
+                </tr>
+            </thead>
+            <tbody id="gameTableBody">
+                <!-- Table rows will be added dynamically here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+<br>
+    <h1>Flipping</h1><br>
+<div class="container">
+    <div class="dashboard-container">
+        <div class="dashboard-card">
+            <h2>Score of Last Game Played</h2>
+            <p id="score2">0</p> <!-- Example Score -->
+        </div>
+        <div class="dashboard-card">
+            <canvas id="myChart1" width="500" height="300"></canvas>
+        </div>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Score of Last Game</th>
+                    <th>Date and Time of Last Game Played</th>
+                </tr>
+            </thead>
+            <tbody id="gameTableBody1">
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+<br>
+    <!-- <h1>Click the Shape</h1><br>
+<div class="container">
+    <div class="dashboard-container">
+        <div class="dashboard-card">
+            <h2>Score of Last Game Played</h2>
+            <p id="score3">20</p> 
+        </div>
+        <div class="dashboard-card">
+            <canvas id="myChart2" width="500" height="300"></canvas>
+        </div>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Score of Last Game</th>
+                    <th>Date and Time of Last Game Played</th>
+                </tr>
+            </thead>
+            <tbody id="gameTableBody2">
+                
+            </tbody>
+        </table>
+    </div>
+</div> -->
+<script>
+    
+    // const dataString2 = localStorage.getItem("sharedAutism3Score");
+    const data = [0,20];
+    const data1 = [0,16];
+    // const data2 = dataString2.split(',').map(Number);
+    // console.log(data2);
+    var score1 = data[data.length - 1];
+    var scoring = document.getElementById("score1");
+    // var score3 = data2[data2.length - 1];
+    // var scoring3 = document.getElementById("score3");
+    var score2 = data1[data1.length - 1];
+    var scoring2 = document.getElementById("score2");
+    scoring2.innerHTML = score2;
+    // var score3 = data2[data2.length - 1];
+    // var scoring3 = document.getElementById("score3");
+    // scoring3.innerHTML = `${score3}`;
+    // Set the current date and time
+    var currentDate = new Date();
+    var currentDateTime = currentDate.toLocaleString();
+
+    // Dynamically add rows to the table based on the length of the data array
+    var tableBody = document.getElementById("gameTableBody");
+    for (var i = 0; i < data.length; i++) {
+        var newRow = tableBody.insertRow();
+        var indexCell = newRow.insertCell(0);
+        var scoreCell = newRow.insertCell(1);
+        var dateTimeCell = newRow.insertCell(2);
+
+        indexCell.textContent = i + 1;
+        scoreCell.textContent = data[i];
+        dateTimeCell.textContent = currentDateTime; // Use current date and time for each row
+    }
+    scoring.innerHTML = `${score1}`;
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map((value, index) => index), // Labels for X-axis
+            datasets: [{
+                label: 'My Data', // Label for the dataset
+                data: data, // Array of data values
+                borderColor: 'white', // Color of the line
+                borderWidth: 2, // Width of the line
+                color:'white'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Game',
+                        color:'white'
+                    },
+                    ticks: {
+                fontSize: 40
+            },
+                    
+                    color:'white'
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Score',
+                        color:'white'
+                    },
+                    
+                    color:'white'
+                }
+            }
+        }
+    });
+    const ctx1 = document.getElementById('myChart1').getContext('2d');
+    const myChart1 = new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: data1.map((value, index) => index), // Labels for X-axis
+            datasets: [{
+                label: 'My Data', // Label for the dataset
+                data: data1, // Array of data values
+                borderColor: 'white', // Color of the line
+                borderWidth: 2, // Width of the line
+                color:'white'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Game',
+                        color:'white'
+                    },
+                    ticks: {
+                fontSize: 40
+            },
+                    
+                    color:'white'
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Score',
+                        color:'white'
+                    },
+                    
+                    color:'white'
+                }
+            }
+        }
+    });
+    // const ctx2 = document.getElementById('myChart2').getContext('2d');
+    // const myChart2 = new Chart(ctx2, {
+    //     type: 'line',
+    //     data: {
+    //         labels: data2.map((value, index) => index), // Labels for X-axis
+    //         datasets: [{
+    //             label: 'My Data', // Label for the dataset
+    //             data: data2, // Array of data values
+    //             borderColor: 'white', // Color of the line
+    //             borderWidth: 2, // Width of the line
+    //             color:'white'
+    //         }]
+    //     },
+    //     options: {
+    //         responsive: true,
+    //         scales: {
+    //             x: {
+                    
+    //                 display: true,
+    //                 title: {
+    //                     display: true,
+    //                     text: 'Game',
+    //                     color:'white'
+    //                 },
+    //                 ticks: {
+    //             fontSize: 40
+    //         },
+                    
+    //                 color:'white'
+    //             },
+    //             y: {
+    //                 display: true,
+    //                 title: {
+    //                     display: true,
+    //                     text: 'Score',
+    //                     color:'white'
+    //                 },
+                    
+    //                 color:'white'
+    //             }
+    //         }
+    //     }
+    // });
+    var tableBody1 = document.getElementById("gameTableBody1");
+    for (var i = 0; i < data.length; i++) {
+        var newRow = tableBody1.insertRow();
+        var indexCell = newRow.insertCell(0);
+        var scoreCell = newRow.insertCell(1);
+        var dateTimeCell = newRow.insertCell(2);
+
+        indexCell.textContent = i + 1;
+        scoreCell.textContent = data1[i];
+        dateTimeCell.textContent = currentDateTime; // Use current date and time for each row
+    }
+    // var tableBody2 = document.getElementById("gameTableBody2");
+    // for (var i = 0; i < data.length; i++) {
+    //     var newRow = tableBody2.insertRow();
+    //     var indexCell = newRow.insertCell(0);
+    //     var scoreCell = newRow.insertCell(1);
+    //     var dateTimeCell = newRow.insertCell(2);
+
+    //     indexCell.textContent = i + 1;
+    //     scoreCell.textContent = data2[i];
+    //     dateTimeCell.textContent = currentDateTime; // Use current date and time for each row
+    // }
+</script>
+</body>
+</html>
